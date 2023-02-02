@@ -1,0 +1,88 @@
+{% extends "_layouts/cp" %}
+
+{% set fullPageForm = true %}
+
+{% set title = 'Overview'|t('osim-focus') %}
+
+{% block actionButton %}
+    <div class="buttons">
+        <div class="btngroup submit">
+            <input type="submit" class="btn submit" value="{{ 'Run Tests'|t('osim-focus') }}">
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    {{ actionInput('osim-focus/projects/test') }}
+    {{ redirectInput('osim-focus') }}
+
+    <div class="readable">
+        <h2>{{'General'|t('osim-focus')}}</h2>
+
+        <table class="data fullwidth fixed-layout" dir="ltr">
+            <tbody>
+                <tr>
+                    <th class="light">{{'Pages'|t('osim-focus')}}</th>
+                    <td>{{craft.osimFocus.pageCount}}</td>
+                </tr>
+                <tr>
+                    <th class="light">{{'Issues'|t('osim-focus')}}</th>
+                    <td>{{craft.osimFocus.issueCount}}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>{{'Unresolved Issues'|t('osim-focus')}}</h2>
+        <table class="data fullwidth fixed-layout" dir="ltr">
+            <tbody>
+                <tr>
+                    <th class="light">{{'Total'|t('osim-focus')}}</th>
+                    <td>{{craft.osimFocus.issueCount(false)}}</td>
+                </tr>
+                <tr>
+                    <th class="light">{{'WCAG Level A'|t('osim-focus')}}</th>
+                    <td>{{craft.osimFocus.issueCount(false, 'A')}}</td>
+                </tr>
+                <tr>
+                    <th class="light">{{'WCAG Level AA'|t('osim-focus')}}</th>
+                    <td>{{craft.osimFocus.issueCount(false, 'AA')}}</td>
+                </tr>
+                <tr>
+                    <th class="light">{{'WCAG Level AAA'|t('osim-focus')}}</th>
+                    <td>{{craft.osimFocus.issueCount(false, 'AAA')}}</td>
+                </tr>
+                <tr>
+                    <th class="light">{{'Best Practice'|t('osim-focus')}}</th>
+                    <td>{{craft.osimFocus.issueCount(false, 'BP')}}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>{{'OSiM Focus'|t('osim-focus')}}</h2>
+        <table class="data fullwidth fixed-layout" dir="ltr">
+            <tbody>
+                <tr>
+                    <td>
+                        <a class="go" href="https://focus.osim.digital" rel="noopener" target="_blank">
+                            <span dir="ltr">https://focus.osim.digital</span>
+                        </a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <a class="go" href="https://focus.osim.digital/docs/what-osim-focus-tests" rel="noopener" target="_blank">
+                            <span dir="ltr">{{'What OSiM Focus Tests'|t('osim-focus')}}</span>
+                        </a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <a class="go" href="https://focus.osim.digital/terms-of-use" rel="noopener" target="_blank">
+                            <span dir="ltr">{{'Terms of Use'|t('osim-focus')}}</span>
+                        </a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

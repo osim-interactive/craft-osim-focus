@@ -1,0 +1,13 @@
+{% extends 'osim-focus/layouts/_index' %}
+
+{% set selectedSubnavItem = 'pages' %}
+
+{% set elementType = 'osim\\craft\\focus\\elements\\Page' %}
+
+{% set crumbs = [
+    { label: craft.osimFocus.name, url: url('osim-focus') },
+] %}
+
+{% js %}
+    window.osimFocusProjectId = '{{projectId|e('js')}}';
+{% endjs %}

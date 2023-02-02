@@ -1,0 +1,55 @@
+{% if not craft.osimFocus.hasViewports %}
+    {% redirect 'osim-focus/settings/viewports/new' %}
+{% endif %}
+
+{% extends 'osim-focus/layouts/_settings' %}
+{% do view.registerAssetBundle('craft\\web\\assets\\admintable\\AdminTableAsset') -%}
+
+{% set title = 'Viewports'|t('osim-focus') %}
+
+{% block actionButton %}
+    <a href="{{ url('osim-focus/settings/viewports/new') }}" class="btn submit add icon">
+        {{'New Viewport'|t('osim-focus')}}
+    </a>
+{% endblock %}
+
+{% block content %}
+    <div id="osim_focus_index_table"></div>
+{% endblock %}
+
+{% set tableData = [] %}
+
+{% for item in items %}
+	{% set tableData = tableData|merge([{
+        id: item.id,
+        title: item.name,
+        url: url('osim-focus/settings/viewports/edit/' ~ item.id),
+        width: item.width,
+        height: item.height,
+    }]) %}
+{% endfor %}
+
+{% js %}
+    var columns = [
+        {
+            name: '__slot:title',
+            title: Craft.t('app', 'Name'),
+        },
+        {
+            name: 'width',
+            title: Craft.t('osim-focus', 'Width'),
+        },
+        {
+            name: 'height',
+            title: Craft.t('osim-focus', 'Height'),
+        }
+    ];
+
+    new Craft.VueAdminTable({
+        columns: columns,
+        container: '#osim_focus_index_table',
+        deleteAction: 'osim-focus/viewports/delete',
+        emptyMessage: Craft.t('osim-focus', 'No viewports exist yet.'),
+        tableData: {{tableData|json_encode|raw}},
+    });
+{% endjs %}

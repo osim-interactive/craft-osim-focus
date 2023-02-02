@@ -1,0 +1,62 @@
+{% if not craft.osimFocus.hasProjects %}
+    {% redirect 'osim-focus/settings/projects/new' %}
+{% endif %}
+
+{% extends 'osim-focus/layouts/_settings' %}
+{% do view.registerAssetBundle('craft\\web\\assets\\admintable\\AdminTableAsset') -%}
+
+{% block actionButton %}
+    <a href="{{ url('osim-focus/settings/projects/new') }}" class="btn submit add icon">
+        {{'New Project'|t('osim-focus')}}
+    </a>
+{% endblock %}
+
+{% block content %}
+    <div id="osim_focus_index_table"></div>
+{% endblock %}
+
+{% set tableData = [] %}
+
+{% for item in items %}
+    {% set tableData = tableData|merge([{
+        id: item.id,
+        title: item.name,
+        site: craft.osimFocus.siteOptions[item.siteId],
+        url: url('osim-focus/settings/projects/edit/' ~ item.id),
+        osimFocusProjectId: item.osimFocusProjectId,
+    }]) %}
+{% endfor %}
+
+{% js %}
+    var columns = [
+        {
+            name: '__slot:title',
+            title: Craft.t('osim-focus', 'Name'),
+        },
+        {
+            name: 'site',
+            title: Craft.t('app', 'Site'),
+        },
+        {
+            name: 'osimFocusProjectId',
+            title: Craft.t('osim-focus', 'OSiM Focus Project ID'),
+        }
+    ];
+
+    var count = {{tableData|length}};
+
+    new Craft.VueAdminTable({
+        columns: columns,
+        container: '#osim_focus_index_table',
+        deleteAction: 'osim-focus/projects/delete',
+        deleteCallback: function () {
+            --count;
+
+            if (count == 0) {
+                document.getElementById('osim_focus_ignore_rules_nav').remove()
+            }
+        },
+        emptyMessage: Craft.t('osim-focus', 'No projects exist yet.'),
+        tableData: {{tableData|json_encode|raw}},
+    });
+{% endjs %}

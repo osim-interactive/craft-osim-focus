@@ -1,0 +1,45 @@
+{% extends 'osim-focus/layouts/_settings' %}
+
+{% if id %}
+    {% set title = 'Edit Account'|t('osim-focus') %}
+    {% set pageTitle = 'Edit'|t('osim-focus') %}
+{% else %}
+    {% set title = 'New Account'|t('osim-focus') %}
+    {% set pageTitle = 'New'|t('osim-focus') %}
+{% endif %}
+
+{% set tabs = [
+    {
+        label: 'General'|t('osim-focus'),
+        url: '#settings-account-general',
+        class: null,
+    },
+    {
+        label: 'Test API Settings'|t('osim-focus'),
+        url: '#settings-account-test-api-settings',
+        class: null,
+    }
+] %}
+
+{% block actionButton %}
+    <div class="buttons">
+        <div class="btngroup submit">
+            <input type="submit" class="btn submit" value="{{'Save'|t('osim-focus')}}">
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    {{actionInput('osim-focus/accounts/save')}}
+    {{redirectInput('osim-focus/settings/accounts')}}
+
+    {% if id %}<input type="hidden" name="data[id]" value="{{ id }}">{% endif %}
+
+	<div id="settings-account-general">
+		{% include 'osim-focus/settings/accounts/_item-general' %}
+	</div>
+
+	<div id="settings-account-test-api-settings" class="hidden">
+		{% include 'osim-focus/settings/accounts/_item-test-api-settings' %}
+	</div>
+{% endblock %}

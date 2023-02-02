@@ -1,0 +1,18 @@
+{% import '_includes/forms.twig' as forms %}
+
+{{forms.textField({
+    label: 'Custom Plugin Name'|t('osim-focus'),
+    instructions: 'Overrides the name displayed throughout the control panel.'|t('osim-focus'),
+    placeholder: "OSiM Focus"|t('osim-focus'),
+    name: 'data[pluginName]',
+    value: item.pluginName,
+    errors: item.getErrors('pluginName'),
+})}}
+
+{{forms.selectField({
+    label: 'Viewport Column'|t('osim-focus'),
+    name: 'data[displayViewport]',
+    options: craft.osimFocus.displayViewportOptions(),
+    value: item.displayViewport,
+    errors: item.getErrors('displayViewport'),
+})}}

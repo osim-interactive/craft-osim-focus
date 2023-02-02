@@ -1,0 +1,45 @@
+{% if not craft.osimFocus.hasIgnoreRules %}
+    {% redirect 'osim-focus/settings/ignore-rules/new' %}
+{% endif %}
+
+{% extends 'osim-focus/layouts/_settings' %}
+{% do view.registerAssetBundle('craft\\web\\assets\\admintable\\AdminTableAsset') -%}
+
+{% set title = 'Ignore Rules'|t('osim-focus') %}
+
+{% block actionButton %}
+    <a href="{{ url('osim-focus/settings/ignore-rules/new') }}" class="btn submit add icon">
+        {{'New Rule'|t('osim-focus')}}
+    </a>
+{% endblock %}
+
+{% block content %}
+    <div id="osim_focus_index_table"></div>
+{% endblock %}
+
+{% set tableData = [] %}
+
+{% for item in items %}
+	{% set tableData = tableData|merge([{
+        id: item.id,
+        title: item.name,
+        url: url('osim-focus/settings/ignore-rules/edit/' ~ item.id),
+    }]) %}
+{% endfor %}
+
+{% js %}
+    var columns = [
+        {
+            name: '__slot:title',
+            title: Craft.t('app', 'Name'),
+        },
+    ];
+
+    new Craft.VueAdminTable({
+        columns: columns,
+        container: '#osim_focus_index_table',
+        deleteAction: 'osim-focus/ignore-rules/delete',
+        emptyMessage: Craft.t('osim-focus', 'No ignore rules exist yet.'),
+        tableData: {{tableData|json_encode|raw}},
+    });
+{% endjs %}

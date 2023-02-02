@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+<defs>
+<style>.cls-1{fill:#db2616;}.cls-2{fill:#22a7a8;}.cls-3{fill:#253547;}.cls-4{fill:#c9e3ff;}</style>
+</defs>
+<rect class="cls-4" y="0" width="32" height="32"/>
+<path class="cls-2" d="m25.34,10h-7.68c-.92,0-1.66-.9-1.66-2s.74-2,1.66-2h7.68c.92,0,1.66.9,1.66,2s-.74,2-1.66,2Z"/>
+<rect class="cls-1" x="5" y="6" width="9" height="4"/>
+<path class="cls-2" d="m16.51,18H6.49c-.82,0-1.49-.9-1.49-2s.66-2,1.49-2h10.03c.82,0,1.49.9,1.49,2s-.66,2-1.49,2Z"/>
+<rect class="cls-1" x="20" y="14" width="7" height="4"/>
+<rect class="cls-1" x="5" y="22" width="8" height="4"/>
+<path class="cls-2" d="m25.5,26h-9c-.83,0-1.5-.9-1.5-2s.67-2,1.5-2h9c.83,0,1.5.9,1.5,2s-.67,2-1.5,2Z"/>
+<polygon class="cls-3" points="2 11 0 11 0 0 11 0 11 2 2 2 2 11"/>
+<polygon class="cls-3" points="32 11 30 11 30 2 21 2 21 0 32 0 32 11"/>
+<polygon class="cls-3" points="32 32 21 32 21 30 30 30 30 21 32 21 32 32"/>
+<polygon class="cls-3" points="11 32 0 32 0 21 2 21 2 30 11 30 11 32"/>
+</svg>

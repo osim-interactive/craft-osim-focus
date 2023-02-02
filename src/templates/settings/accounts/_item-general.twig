@@ -1,0 +1,19 @@
+{% import '_includes/forms' as forms %}
+
+{{forms.textField({
+    label: 'Name'|t('osim-focus'),
+    instructions: 'This name is used for your identification only.'|t('osim-focus'),
+    name: 'data[name]',
+    value: item.name,
+    errors: item.getErrors('name'),
+    required: true,
+})}}
+
+{{forms.autosuggestField({
+    label: 'OSiM Focus API Key'|t('osim-focus'),
+    name: 'data[osimFocusApiKey]',
+    value: item.osimFocusApiKey,
+    errors: item.getErrors('osimFocusApiKey'),
+    required: true,
+    suggestEnvVars: true
+})}}

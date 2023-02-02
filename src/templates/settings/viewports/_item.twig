@@ -1,0 +1,52 @@
+{% extends 'osim-focus/layouts/_settings' %}
+{% import '_includes/forms' as forms %}
+
+{% if id %}
+    {% set title = 'Edit Viewport'|t('osim-focus') %}
+    {% set pageTitle = 'Edit'|t('osim-focus') %}
+{% else %}
+    {% set title = 'New Viewport'|t('osim-focus') %}
+    {% set pageTitle = 'New'|t('osim-focus') %}
+{% endif %}
+
+{% block actionButton %}
+    <div class="buttons">
+        <div class="btngroup submit">
+            <input type="submit" class="btn submit" value="{{ 'Save'|t('osim-focus') }}">
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    {{ actionInput('osim-focus/viewports/save') }}
+    {{ redirectInput('osim-focus/settings/viewports') }}
+
+    {% if id %}<input type="hidden" name="data[id]" value="{{ id }}">{% endif %}
+
+    {{ forms.textField({
+        first: true,
+        label: 'Name'|t('osim-focus'),
+        instructions: 'This name is used for your identification only.'|t('osim-focus'),
+        name: 'data[name]',
+        value: item.name,
+        errors: item.getErrors('name'),
+        required: true,
+    }) }}
+
+    {{ forms.textField({
+        label: 'Width'|t('osim-focus'),
+        name: 'data[width]',
+        value: item.width,
+        errors: item.getErrors('width'),
+        required: true,
+    }) }}
+
+    {{ forms.textField({
+        label: 'Height'|t('osim-focus'),
+        name: 'data[height]',
+        value: item.height,
+        errors: item.getErrors('height'),
+        required: true,
+    }) }}
+
+{% endblock %}

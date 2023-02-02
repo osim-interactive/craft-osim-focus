@@ -1,0 +1,37 @@
+{% extends 'osim-focus/layouts/_settings' %}
+
+{% set title = 'General Settings'|t('osim-focus') %}
+
+{% set tabs = [
+    {
+        label: 'General'|t('osim-focus'),
+        url: '#settings-general-general',
+        class: null,
+    },
+    {
+        label: 'Test API Settings'|t('osim-focus'),
+        url: '#settings-general-test-api-settings',
+        class: null,
+    }
+] %}
+
+{% block actionButton %}
+    <div class="buttons">
+        <div class="btngroup submit">
+            <input type="submit" class="btn submit" value="{{ 'Save'|t('osim-focus') }}">
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    {{ actionInput('osim-focus/settings/save') }}
+    {{ redirectInput('osim-focus/settings/general') }}
+
+	<div id="settings-general-general">
+		{% include 'osim-focus/settings/general/_item-general' %}
+	</div>
+
+	<div id="settings-general-test-api-settings" class="hidden">
+		{% include 'osim-focus/settings/general/_item-test-api-settings' %}
+	</div>
+{% endblock %}

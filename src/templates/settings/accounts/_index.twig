@@ -1,0 +1,50 @@
+{% if not craft.osimFocus.hasAccounts %}
+    {% redirect 'osim-focus/settings/accounts/new' %}
+{% endif %}
+
+{% extends 'osim-focus/layouts/_settings' %}
+{% do view.registerAssetBundle('craft\\web\\assets\\admintable\\AdminTableAsset') -%}
+
+{% set title = 'Accounts'|t('osim-focus') %}
+
+{% block actionButton %}
+    <a href="{{ url('osim-focus/settings/accounts/new') }}" class="btn submit add icon">
+        {{'New Account'|t('osim-focus')}}
+    </a>
+{% endblock %}
+
+{% block content %}
+    <div id="osim_focus_index_table"></div>
+{% endblock %}
+
+{% set tableData = [] %}
+
+{% for item in items %}
+	{% set tableData = tableData|merge([{
+        id: item.id,
+        url: url('osim-focus/settings/accounts/edit/' ~ item.id),
+        title: item.name,
+        osimFocusApiKey: item.osimFocusApiKey,
+    }]) %}
+{% endfor %}
+
+{% js %}
+    var columns = [
+        {
+            name: '__slot:title',
+            title: Craft.t('osim-focus', 'Name'),
+        },
+        {
+            name: 'osimFocusApiKey',
+            title: Craft.t('osim-focus', 'OSiM Focus API Key'),
+        }
+    ];
+
+    new Craft.VueAdminTable({
+        columns: columns,
+        container: '#osim_focus_index_table',
+        deleteAction: 'osim-focus/accounts/delete',
+        emptyMessage: Craft.t('osim-focus', 'No accounts exist yet.'),
+        tableData: {{tableData|json_encode|raw}},
+    });
+{% endjs %}

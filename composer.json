@@ -1,0 +1,40 @@
+{
+  "name": "osim/craft-focus",
+  "description": "A Craft CMS plugin that integrates the focus.osim.digital accessibility checker.",
+  "type": "craft-plugin",
+  "keywords": [
+      "craft",
+      "cms",
+      "craftcms",
+      "craft-plugin",
+      "a11y",
+      "accessibility",
+      "focus"
+  ],
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "OSiM Interactive",
+      "homepage": "https://osim.digital"
+    }
+  ],
+  "support": {
+    "email": "support@osim.digital",
+    "issues": "https://github.com/OSIM-Interactive/craft-focus/issues?state=open",
+    "source": "https://github.com/OSIM-Interactive/craft-focus",
+    "docs": "https://github.com/OSIM-Interactive/craft-focus/blob/main/README.md"
+  },
+  "require": {
+    "craftcms/cms": "^4.0.0",
+    "xlient/xml-sitemap": "^1.0.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "osim\\craft\\focus\\": "src/"
+    }
+  },
+  "extra": {
+    "name": "OSiM Focus",
+    "handle": "osim-focus"
+  }
+}

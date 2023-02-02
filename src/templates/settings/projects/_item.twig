@@ -1,0 +1,62 @@
+{% if craft.osimFocus.accountOptions is empty %}
+    {% redirect 'osim-focus/settings/projects' %}
+{% endif %}
+
+{% extends 'osim-focus/layouts/_settings' %}
+
+{% if id %}
+    {% set title = 'Edit Project'|t('osim-focus') %}
+    {% set pageTitle = 'Edit'|t('osim-focus') %}
+{% else %}
+    {% set title = 'New Project'|t('osim-focus') %}
+    {% set pageTitle = 'New'|t('osim-focus') %}
+{% endif %}
+
+{% set tabs = [
+    {
+        label: 'General'|t('osim-focus'),
+        url: '#settings-project-general',
+        class: null,
+    }
+] %}
+
+{% if not craft.osimFocus.viewportOptions is empty %}
+    {% set tabs = tabs|merge([{
+        label: 'Viewports'|t('osim-focus'),
+        url: '#settings-project-viewports',
+        class: null,
+    }]) %}
+{% endif %}
+
+{% set tabs = tabs|merge([{
+    label: 'Test API Settings'|t('osim-focus'),
+    url: '#settings-project-test-api-settings',
+    class: null,
+}]) %}
+
+{% block actionButton %}
+    <div class="buttons">
+        <div class="btngroup submit">
+            <input type="submit" class="btn submit" value="{{ 'Save'|t('osim-focus') }}">
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    {{ actionInput('osim-focus/projects/save') }}
+    {{ redirectInput('osim-focus/settings/projects') }}
+
+    {% if id %}<input type="hidden" name="data[id]" value="{{ id }}">{% endif %}
+
+	<div id="settings-project-general">
+		{% include 'osim-focus/settings/projects/_item-general' %}
+	</div>
+
+	<div id="settings-project-viewports" class="hidden">
+		{% include 'osim-focus/settings/projects/_item-viewports' %}
+	</div>
+
+	<div id="settings-project-test-api-settings" class="hidden">
+		{% include 'osim-focus/settings/projects/_item-test-api-settings' %}
+	</div>
+{% endblock %}

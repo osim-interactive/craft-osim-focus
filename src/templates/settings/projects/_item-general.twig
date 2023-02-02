@@ -1,0 +1,63 @@
+{% import '_includes/forms' as forms %}
+{% import 'osim-focus/_includes/forms' as osimFocusForms %}
+
+{{forms.textField({
+    first: true,
+    label: 'Name'|t('osim-focus'),
+    instructions: 'This name is used for your identification only.'|t('osim-focus'),
+    name: 'data[name]',
+    value: item.name,
+    errors: item.getErrors('name'),
+    required: true,
+})}}
+
+{% if craft.app.isMultisite %}
+    {{forms.selectField({
+        label: "Site"|t('osim-focus'),
+        name: 'data[siteId]',
+        options: craft.osimFocus.siteOptions(''),
+        value: item.siteId,
+        errors: item.getErrors('siteId'),
+        required: true,
+    })}}
+{% endif %}
+
+{{forms.textField({
+    label: 'Sitemap URL'|t('osim-focus'),
+    name: 'data[sitemapUrl]',
+    value: item.sitemapUrl,
+    errors: item.getErrors('sitemapUrl'),
+    required: true,
+})}}
+
+<h2>{{'OSiM Focus API'|t('osim-focus')}}</h2>
+
+{% set osimFocusAccountId =  "osimFocusAccountId#{random()}" %}
+{% if craft.osimFocus.accountOptions|length == 1 %}
+    <input id="{{osimFocusAccountId}}" type="hidden" name="data[accountId]" value="{{craft.osimFocus.accountOptions|keys[0]}}">
+{% else %}
+    {{forms.selectField({
+        id: osimFocusAccountId,
+        label: 'Account'|t('osim-focus'),
+        name: 'data[accountId]',
+        options: craft.osimFocus.accountOptions(''),
+        value: item.accountId,
+        errors: item.getErrors('accountId'),
+        required: true,
+    })}}
+{% endif %}
+
+{{osimFocusForms.autosuggestField({
+    label: 'OSiM Focus Project ID'|t('osim-focus'),
+    instructions: 'Optional OSiM Focus project ID.'|t('osim-focus'),
+    name: 'data[osimFocusProjectId]',
+    value: item.osimFocusProjectId,
+    errors: item.getErrors('osimFocusProjectId'),
+    suggestionSourceUrl: 'osim-focus/options/osim-focus-projects/{{accountId}}',
+    suggestionSourceParams: {'accountId': osimFocusAccountId}
+})}}
+
+{{forms.checkboxField({
+    label: 'Create a New OSiM Focus Project ID'|t('osim-focus'),
+    name: 'data[newOsimFocusProjectId]',
+})}}

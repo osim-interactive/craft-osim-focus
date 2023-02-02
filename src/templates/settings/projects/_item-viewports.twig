@@ -1,0 +1,15 @@
+{% import '_includes/forms' as forms %}
+
+<div class="notice has-icon">
+    <span class="icon" aria="hidden"></span>
+    <span class="visually-hidden">{{'Tip:'|t('app')}}</span>
+    {{'The default OSiM Focus account viewport will be used if no viewports are specified.'|t('osim-focus')}}
+</div>
+
+{{forms.checkboxSelectField({
+    label: 'Viewports'|t('osim-focus'),
+    name: 'data[viewportIds]',
+    options: craft.osimFocus.viewportOptions(),
+    values: item.viewportIds,
+    errors: item.getErrors('viewportIds'),
+})}}

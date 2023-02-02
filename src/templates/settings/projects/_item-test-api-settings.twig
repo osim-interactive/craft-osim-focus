@@ -1,0 +1,82 @@
+{% import '_includes/forms' as forms %}
+
+<div class="notice has-icon">
+    <span class="icon" aria="hidden"></span>
+    <span class="visually-hidden">{{'Tip:'|t('app')}}</span>
+    {{'The test API settings cascade down in the following order: Project > Account > Global > OSiM Focus.'|t('osim-focus')}}
+</div>
+
+{{forms.selectField({
+    label: 'Certainty'|t('osim-focus'),
+    instructions: 'Sometimes OSiM Focus will return results that it isn\'t completely sure are real issues. The certainty option allows you to filter out these "uncertain" results by choosing a minimum acceptable certainty level.'|t('osim-focus'),
+    name: 'data[certainty]',
+    options: craft.osimFocus.osimFocusCertaintyOptions('Use Account Settings'|t('osim-focus')),
+    value: item.certainty,
+    errors: item.getErrors('certainty'),
+})}}
+
+{{forms.selectField({
+    label: 'Priority'|t('osim-focus'),
+    instructions: 'Each issue reported will be given a calculated priority. The priority option allows you to specify the minimum priority of the results returned.'|t('osim-focus'),
+    name: 'data[priority]',
+    options: craft.osimFocus.osimFocusPriorityOptions('Use Account Settings'|t('osim-focus')),
+    value: item.priority,
+    errors: item.getErrors('priority'),
+})}}
+
+{{forms.selectField({
+    label: 'WCAG'|t('osim-focus'),
+    instructions: 'Return test results that target WCAG standards.'|t('osim-focus'),
+    name: 'data[wcag]',
+    options: craft.osimFocus.osimFocusWcagOptions('Use Account Settings'|t('osim-focus')),
+    value: item.wcag,
+    errors: item.getErrors('wcag'),
+})}}
+
+{{forms.selectField({
+    label: 'WCAG Level'|t('osim-focus'),
+    instructions: 'The maximum WCAG level to test against.'|t('osim-focus'),
+    name: 'data[wcagLevel]',
+    options: craft.osimFocus.osimFocusWcagLevelOptions('Use Account Settings'|t('osim-focus')),
+    value: item.wcagLevel,
+    errors: item.getErrors('wcagLevel'),
+})}}
+
+{{forms.selectField({
+    label: 'Best Practice'|t('osim-focus'),
+    instructions: 'Return test results that target best practices.'|t('osim-focus'),
+    name: 'data[bestPractice]',
+    options: craft.osimFocus.osimFocusWcagOptions('Use Account Settings'|t('osim-focus')),
+    value: item.bestPractice,
+    errors: item.getErrors('bestPractice'),
+})}}
+
+{{forms.selectField({
+    label: 'Store'|t('osim-focus'),
+    instructions: 'Store results on OSiM Focus.'|t('osim-focus'),
+    name: 'data[store]',
+    options: craft.osimFocus.osimFocusStoreOptions('Use OSiM Focus Settings'|t('osim-focus')),
+    value: item.store|number,
+    errors: item.getErrors('store'),
+})}}
+
+{{forms.textField({
+    type: 'number',
+    label: 'Delay'|t('osim-focus'),
+    instructions: 'The amount of time, in miliseconds, OSiM Focus should wait after a page has loaded before beginning execution of tests.'|t('osim-focus'),
+    name: 'data[delay]',
+    value: item.delay,
+    tip: 'Leave blank to use account settings.'|t('osim-focus'),
+    errors: item.getErrors('delay'),
+    min: 0,
+})}}
+
+{{forms.textField({
+    label: 'User-Agent String'|t('osim-focus'),
+    instructions: 'The User-Agent string to be sent when OSiM Focus requests a URL for testing.'|t('osim-focus'),
+    name: 'data[userAgent]',
+    value: item.userAgent,
+    tip: 'Leave blank to use account settings.'|t('osim-focus'),
+    errors: item.getErrors('userAgent'),
+    min: 0,
+})}}

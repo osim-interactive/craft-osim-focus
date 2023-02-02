@@ -1,0 +1,149 @@
+{% extends 'osim-focus/layouts/_settings' %}
+{% import '_includes/forms' as forms %}
+
+{% macro comparatorField(config) %}
+    {% embed '_includes/forms/field' with config %}
+        {% block input %}
+            {% import '_includes/forms' as forms %}
+            <div class="flex flex-nowrap">
+                <div>
+                    {{ forms.select({
+                        name: "data[#{config.name}Comparator]",
+                        options: config.comparatorOptions,
+                        value: config.comparatorValue,
+                        describedBy: describedBy,
+                    }) }}
+                </div>
+                <div class="flex-grow">
+                    {{ forms.text({
+                        class: 'ltr',
+                        name: "data[#{config.name}Value]",
+                        value: config.valueValue,
+                        placeholder: config.placeholder??'',
+                        describedBy: describedBy,
+                    }) }}
+                </div>
+            </div>
+        {% endblock %}
+    {% endembed %}
+{% endmacro %}
+
+{% if id %}
+    {% set title = 'Edit Ignore Rule'|t('osim-focus') %}
+    {% set pageTitle = 'Edit'|t('osim-focus') %}
+{% else %}
+    {% set title = 'New Ignore Rule'|t('osim-focus') %}
+    {% set pageTitle = 'New'|t('osim-focus') %}
+{% endif %}
+
+{% block actionButton %}
+    <div class="buttons">
+        <div class="btngroup submit">
+            <input type="submit" class="btn submit" value="{{'Save'|t('osim-focus')}}">
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    {{actionInput('osim-focus/ignore-rules/save')}}
+    {{redirectInput('osim-focus/settings/ignore-rules')}}
+
+    {% if id %}<input type="hidden" name="data[id]" value="{{id}}">{% endif %}
+
+    {% if item.getFirstErrors('general') %}
+        <div class="error">
+            <span class="visually-hidden">{{'Error:'|t('app')}}</span>
+            {{item.getFirstError('general')}}
+        </div>
+    {% endif %}
+
+    {{forms.textField({
+        first: not item.getFirstErrors('general'),
+        label: 'Name'|t('osim-focus'),
+        instructions: 'This name is used for your identification only.'|t('osim-focus'),
+        name: 'data[name]',
+        value: item.name,
+        errors: item.getErrors('name'),
+        required: true,
+    })}}
+
+    {% if craft.osimFocus.hasAccounts or craft.osimFocus.hasViewports %}
+        <h2>{{'Target'|t('osim-focus')}}</h2>
+
+        {% if craft.osimFocus.hasAccounts %}
+            {{forms.selectField({
+                label: 'Account'|t('osim-focus'),
+                name: 'data[accountId]',
+                options: craft.osimFocus.accountOptions(''),
+                value: item.accountId,
+                errors: item.getErrors('accountId'),
+            })}}
+        {% endif %}
+
+        {% if craft.osimFocus.hasProjects %}
+            {{forms.selectField({
+                label: "Project"|t('osim-focus'),
+                name: 'data[projectId]',
+                options: craft.osimFocus.projectOptions(''),
+                value: item.projectId,
+                errors: item.getErrors('projectId'),
+            })}}
+        {% endif %}
+
+        {% if craft.osimFocus.hasViewports %}
+            {{forms.selectField({
+                label: "Viewport"|t('osim-focus'),
+                name: 'data[viewportId]',
+                options: craft.osimFocus.viewportOptions(''),
+                value: item.viewportId,
+                errors: item.getErrors('viewportId'),
+            })}}
+        {% endif %}
+    {% endif %}
+
+    <h2>{{'Criteria'|t('osim-focus')}}</h2>
+
+    {{ _self.comparatorField({
+        label: 'Page URL'|t('osim-focus'),
+        instructions: 'Ignore issues on pages that match this URL comparison.'|t('osim-focus'),
+        tip: 'For relative urls, prefix with a starting \'/\'.'|t('osim-focus')~' '~'Query param values will always compare using exact match. Leave query param values empty to ensure not set. Any query params not specified will be ignored.'|t('osim-focus'),
+        placeholder: '/page/path?queryParam=value'|t('osim-focus'),
+        name: 'pageUrl',
+        comparatorOptions: craft.osimFocus.comparatorOptions(''),
+        comparatorValue: item.pageUrlComparator,
+        valueValue: item.pageUrlValue,
+        errors: item.getErrors('pageUrlValue')
+    }) }}
+
+    {{forms.textField({
+        type: 'number',
+        label: 'Rule ID'|t('osim-focus'),
+        name: 'data[ruleId]',
+        value: item.ruleId,
+        errors: item.getErrors('ruleId'),
+        min: 0,
+    })}}
+
+    {{ _self.comparatorField({
+        label: 'XPath'|t('osim-focus'),
+        instructions: 'Ignore issues that match this XPath comparison.'|t('osim-focus'),
+        placeholder: '/main[1]/'|t('osim-focus'),
+        name: 'xpath',
+        comparatorOptions: craft.osimFocus.comparatorOptions(''),
+        comparatorValue: item.xpathComparator,
+        valueValue: item.xpathValue,
+        errors: item.getErrors('xpathValue')
+    }) }}
+
+    {{ _self.comparatorField({
+        label: 'Selector'|t('osim-focus'),
+        instructions: 'Ignore issues that match this Selector comparison.'|t('osim-focus'),
+        placeholder: '.header'|t('osim-focus'),
+        name: 'selector',
+        comparatorOptions: craft.osimFocus.comparatorOptions(''),
+        comparatorValue: item.selectorComparator,
+        valueValue: item.selectorValue,
+        errors: item.getErrors('selectorValue')
+    }) }}
+
+{% endblock %}
