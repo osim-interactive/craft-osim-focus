@@ -21,9 +21,6 @@ class ViewportsController extends Controller
 
     public function actionIndex(): Response
     {
-        $job = new \osim\craft\focus\jobs\OsimFocusTest();
-        $job->execute(null);
-        exit;
         $plugin = Plugin::getInstance();
 
         return $this->renderTemplate(
