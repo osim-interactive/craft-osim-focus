@@ -20,9 +20,9 @@
   ],
   "support": {
     "email": "support@osim.digital",
-    "issues": "https://github.com/OSIM-Interactive/craft-focus/issues?state=open",
-    "source": "https://github.com/OSIM-Interactive/craft-focus",
-    "docs": "https://github.com/OSIM-Interactive/craft-focus/blob/main/README.md"
+    "issues": "https://github.com/osim-interactive/craft-osim-focus/issues?state=open",
+    "source": "https://github.com/osim-interactive/craft-osim-focus",
+    "docs": "https://github.com/osim-interactive/craft-osim-focus/blob/main/README.md"
   },
   "require": {
     "craftcms/cms": "^4.0.0",
