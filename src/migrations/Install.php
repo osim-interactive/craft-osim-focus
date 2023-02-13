@@ -129,8 +129,6 @@ class Install extends Migration
         $this->createIndex('certainty', '{{%osim_focus_issues}}', 'certainty');
         $this->createIndex('ruleId', '{{%osim_focus_issues}}', 'ruleId');
         $this->createIndex('ruleName', '{{%osim_focus_issues}}', 'ruleName');
-        $this->createIndex('xpath', '{{%osim_focus_issues}}', 'xpath');
-        $this->createIndex('selector', '{{%osim_focus_issues}}', 'selector');
         $this->createIndex('wcag', '{{%osim_focus_issues}}', 'wcag');
         $this->createIndex('wcagLevel', '{{%osim_focus_issues}}', 'wcagLevel');
         $this->createIndex('bestPractice', '{{%osim_focus_issues}}', 'bestPractice');
