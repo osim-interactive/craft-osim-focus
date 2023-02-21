@@ -8,11 +8,14 @@ use craft\events\ConfigEvent;
 use craft\helpers\Db;
 use craft\helpers\ArrayHelper;
 use craft\helpers\StringHelper;
+use craft\services\ProjectConfig;
 use osim\craft\focus\Plugin;
 use osim\craft\focus\models\Project as ProjectModel;
 use osim\craft\focus\models\ProjectViewport as ProjectViewportModel;
 use osim\craft\focus\records\Project as ProjectRecord;
 use osim\craft\focus\records\ProjectViewport as ProjectViewportRecord;
+use osim\craft\focus\services\Accounts;
+use osim\craft\focus\services\Viewports;
 use yii\base\Component;
 
 class Projects extends Component
@@ -80,7 +83,6 @@ class Projects extends Component
                 'id',
                 'projectId',
                 'viewportId',
-                'uid',
             ])
             ->from([ProjectViewportRecord::TABLE])
             ->where(['projectId' => $projectId]);
@@ -141,7 +143,7 @@ class Projects extends Component
     public function handleDeleted(ConfigEvent $event): void
     {
         $uid = $event->tokenMatches[0];
-        $record = $this->getProjectRecord($uid);
+        $record = $this->getRecord($uid);
 
         if ($record->getIsNewRecord()) {
             return;
@@ -159,12 +161,44 @@ class Projects extends Component
     }
     public function handleChanged(ConfigEvent $event): void
     {
-        $uid = $event->tokenMatches[0];
+        $plugin = Plugin::getInstance();
+
         $data = $event->newValue;
+
+        $projectConfig = Craft::$app->getProjectConfig();
+
+        // Ensure the account is in place first
+        $projectConfig->processConfigChanges(
+            Accounts::PROJECT_CONFIG_PATH . '.' . $data['account']
+        );
+        $accountRecord = $plugin->getAccounts()->getRecord($data['account']);
+        $data['accountId'] = $accountRecord->id;
+
+        // Ensure the site is in place first
+        $projectConfig->processConfigChanges(
+            ProjectConfig::PATH_SITES . '.' . $data['account']
+        );
+        $siteModel = Craft::$app->getSites()->getSiteByUid(
+            $data['site'],
+            true
+        );
+        $data['siteId'] = $siteModel->id;
+
+        // Ensure the viewports are in place first
+        $data['viewportIds'] = [];
+        foreach ($data['viewports'] as $viewportUid) {
+            $projectConfig->processConfigChanges(
+                Viewports::PROJECT_CONFIG_PATH . '.' . $viewportUid
+            );
+            $viewportRecord = $plugin->getViewports()->getRecord($viewportUid);
+            $data['viewportIds'][] = $viewportRecord->id;
+        }
+
+        // Clean data
         $data = $this->typecastData($data);
 
-        $record = $this->getProjectRecord($uid);
-        $isNew = $record->getIsNewRecord();
+        $uid = $event->tokenMatches[0];
+        $record = $this->getRecord($uid);
 
         $record->name = $data['name'];
         $record->siteId = $data['siteId'];
@@ -187,17 +221,18 @@ class Projects extends Component
         $previousViewportsIds = ArrayHelper::getColumn($previousViewportsIds, 'id');
         $newViewportIds = [];
 
-        if (isset($data['viewports'])) {
-            foreach ($data['viewports'] as $uid => $viewport) {
-                $viewportRecord = $this->getProjectViewportRecord($uid);
-                $viewportRecord->projectId = $record->id;
-                $viewportRecord->viewportId = $viewport['viewportId'];
-                $viewportRecord->uid = $uid;
+        foreach ($data['viewportIds'] as $viewportId) {
+            $viewportRecord = $this->getProjectViewportRecord(
+                $record->id,
+                $viewportId
+            );
 
-                $viewportRecord->save(false);
+            $viewportRecord->projectId = $record->id;
+            $viewportRecord->viewportId = $viewportId;
 
-                $newViewportIds[] = $viewportRecord->id;
-            }
+            $viewportRecord->save(false);
+
+            $newViewportIds[] = $viewportRecord->id;
         }
 
         $deleteIds = array_diff($previousViewportsIds, $newViewportIds);
@@ -208,27 +243,36 @@ class Projects extends Component
 
         $this->items = null;
     }
-    private function getProjectRecord($uid)
+    private function getRecord(int|string $criteria): ProjectRecord
     {
-        $query = ProjectRecord::find()
-            ->andWhere(['uid' => $uid]);
+        $query = ProjectRecord::find();
+
+        if (is_numeric($criteria)) {
+            $query->andWhere(['id' => $criteria]);
+        } elseif (is_string($criteria)) {
+            $query->andWhere(['uid' => $criteria]);
+        }
 
         return $query->one() ?? new ProjectRecord();
     }
-    private function getProjectViewportRecord($uid)
+    private function getProjectViewportRecord(
+        int $projectId,
+        int $viewportId
+    ): ProjectViewportRecord
     {
         $query = ProjectViewportRecord::find()
-            ->andWhere(['uid' => $uid]);
+            ->andWhere(['projectId' => $projectId])
+            ->andWhere(['viewportId' => $viewportId]);
 
         return $query->one() ?? new ProjectViewportRecord();
     }
 
-    public function getProjectOptions($emptyOption = null)
+    public function getProjectOptions(?string $emptyOption = null): array
     {
         $options = [];
 
         if ($emptyOption !== null) {
-            $options[0] = strval($emptyOption);
+            $options[0] = $emptyOption;
         }
 
         foreach ($this->getAllProjects() as $model) {
@@ -238,7 +282,7 @@ class Projects extends Component
         return $options;
     }
 
-    public function typecastData(array $data)
+    public function typecastData(array $data): array
     {
         $data['name'] = $data['name'] ?? '';
         $data['siteId'] = intval($data['siteId'] ?? 0);

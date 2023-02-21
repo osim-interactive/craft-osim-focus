@@ -72,7 +72,6 @@ class Install extends Migration
                 'id' => $this->primaryKey(),
                 'projectId' => $this->integer()->notNull(),
                 'viewportId' => $this->integer()->notNull(),
-                'uid' => $this->uid(),
             ]
         );
         $this->createIndex('projectId', '{{%osim_focus_projects_viewports}}', 'projectId');

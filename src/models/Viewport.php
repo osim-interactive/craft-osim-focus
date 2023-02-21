@@ -10,6 +10,7 @@ use osim\craft\focus\Plugin;
 class Viewport extends Model
 {
     public ?int $id = null;
+    // Only set if using default osim focus viewport
     public ?int $accountId = null;
     public ?string $name = null;
     public ?int $width = null;
@@ -32,7 +33,7 @@ class Viewport extends Model
         return $rules;
     }
 
-    public function attributeLabels()
+    public function attributeLabels(): array
     {
         $plugin = Plugin::getInstance();
 
@@ -46,8 +47,16 @@ class Viewport extends Model
 
     public function getConfig(): array
     {
+        $uid = null;
+
+        if ($this->accountId) {
+            $plugin = Plugin::getInstance();
+            $accountModel = $plugin->getAccounts()->getAccountById($this->accountId);
+            $uid = $accountModel->uid;
+        }
+
         return [
-            'accountId' => $this->accountId,
+            'account' => $uid,
             'name' => $this->name,
             'width' => $this->width,
             'height' => $this->height,

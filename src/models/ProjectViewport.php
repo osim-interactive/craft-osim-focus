@@ -9,7 +9,6 @@ class ProjectViewport extends Model
     public ?int $id = null;
     public ?int $projectId = null;
     public ?int $viewportId = null;
-    public ?string $uid = null;
 
     protected function defineRules(): array
     {
@@ -20,20 +19,13 @@ class ProjectViewport extends Model
         return $rules;
     }
 
-    public function attributeLabels()
+    public function attributeLabels(): array
     {
         $plugin = Plugin::getInstance();
 
         return [
             'projectId' => Plugin::t('Project'),
             'viewportId' => Plugin::t('Viewport'),
-        ];
-    }
-
-    public function getConfig(): array
-    {
-        return [
-            'viewportId' => $this->viewportId,
         ];
     }
 }

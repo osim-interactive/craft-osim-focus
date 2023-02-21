@@ -69,12 +69,21 @@ class Issues extends Component
         }
     }
 
-    public function saveIssue(IssueElement $issueElement, bool $runValidation = true): bool
+    public function saveIssue(
+        IssueElement $issueElement,
+        bool $runValidation = true
+    ): bool
     {
-        return Craft::$app->getElements()->saveElement($issueElement, $runValidation);
+        return Craft::$app->getElements()->saveElement(
+            $issueElement,
+            $runValidation
+        );
     }
 
-    public function getIssueCount(?bool $resolved = null, ?string $type = null): int
+    public function getIssueCount(
+        ?bool $resolved = null,
+        ?string $type = null
+    ): int
     {
         $query = IssueElement::find();
 

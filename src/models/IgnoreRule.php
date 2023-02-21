@@ -33,7 +33,7 @@ class IgnoreRule extends Model
         return $rules;
     }
 
-    public function attributeLabels()
+    public function attributeLabels(): array
     {
         $plugin = Plugin::getInstance();
 

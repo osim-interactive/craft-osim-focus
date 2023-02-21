@@ -190,15 +190,20 @@ class IgnoreRules extends Component
         // Clear caches
         $this->items = null;
     }
-    private function getRecord($uid)
+    public function getRecord(int|string $criteria): IgnoreRuleRecord
     {
-        $query = IgnoreRuleRecord::find()
-            ->andWhere(['uid' => $uid]);
+        $query = IgnoreRuleRecord::find();
+
+        if (is_numeric($criteria)) {
+            $query->andWhere(['id' => $criteria]);
+        } elseif (is_string($criteria)) {
+            $query->andWhere(['uid' => $criteria]);
+        }
 
         return $query->one() ?? new IgnoreRuleRecord();
     }
 
-    public function typecastData(array $data)
+    public function typecastData(array $data): array
     {
         $data['name'] = $data['name'] ?? '';
         $data['accountId'] = (intval($data['accountId'] ?? 0) !== 0 ? intval($data['accountId']) : null);

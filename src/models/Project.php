@@ -7,6 +7,7 @@ use craft\helpers\StringHelper;
 use craft\validators\UrlValidator;
 use osim\craft\focus\Plugin;
 use osim\craft\focus\records\ProjectViewport as ProjectViewportRecord;
+use yii\base\InvalidConfigException;
 
 class Project extends Model
 {
@@ -42,7 +43,7 @@ class Project extends Model
 
         return $this->viewports;
     }
-    public function setViewports(array $viewports)
+    public function setViewports(array $viewports): void
     {
         $this->viewports = $viewports;
     }
@@ -79,7 +80,7 @@ class Project extends Model
         return $rules;
     }
 
-    public function attributeLabels()
+    public function attributeLabels(): array
     {
         $plugin = Plugin::getInstance();
 
@@ -102,26 +103,47 @@ class Project extends Model
 
     public function getConfig(): array
     {
-        $viewports = [];
+        $plugin = Plugin::getInstance();
 
+        $siteUid = null;
+        if ($this->siteId) {
+            $siteModel = Craft::$app->getSites()->getSiteById(
+                $this->siteId,
+                true
+            );
+
+            if (!$siteModel) {
+                throw new InvalidConfigException('Project is missing its site ID.');
+            }
+
+            $siteUid = $siteModel->uid;
+        }
+
+        $accountUid = null;
+        if ($this->accountId) {
+            $accountModel = $plugin->getAccounts()->getAccountById($this->accountId);
+
+            if (!$accountModel) {
+                throw new InvalidConfigException('Project is missing its account ID.');
+            }
+
+            $accountUid = $accountModel->uid;
+        }
+
+        $viewportUids = [];
         if ($this->viewports) {
             foreach ($this->viewports as $model) {
-                if (!$model->uid) {
-                    if ($model->id) {
-                        $model->uid = Db::uidById(ProjectViewportRecord::TABLE, $model->id);
-                    } else {
-                        $model->uid = StringHelper::UUID();
-                    }
-
-                }
-                $viewports[$model->uid] = $model->getConfig();
+                $viewportModel = $plugin->getViewports()->getViewportById(
+                    $model->viewportId
+                );
+                $viewportUids[] = $viewportModel->uid;
             }
         }
 
         return [
             'name' => $this->name,
-            'siteId' => $this->siteId,
-            'accountId' => $this->accountId,
+            'site' => $siteUid,
+            'account' => $accountUid,
             'osimFocusProjectId' => $this->osimFocusProjectId,
             'sitemapUrl' => $this->sitemapUrl,
             'certainty' => $this->certainty,
@@ -131,7 +153,7 @@ class Project extends Model
             'bestPractice' => $this->bestPractice,
             'store' => $this->store,
             'userAgent' => $this->userAgent,
-            'viewports' => $viewports,
+            'viewports' => $viewportUids,
             'delay' => $this->delay,
         ];
     }

@@ -155,20 +155,25 @@ class Accounts extends Component
 
         $this->items = null;
     }
-    private function getRecord($uid)
+    public function getRecord(int|string $criteria): AccountRecord
     {
-        $query = AccountRecord::find()
-            ->andWhere(['uid' => $uid]);
+        $query = AccountRecord::find();
+
+        if (is_numeric($criteria)) {
+            $query->andWhere(['id' => $criteria]);
+        } elseif (is_string($criteria)) {
+            $query->andWhere(['uid' => $criteria]);
+        }
 
         return $query->one() ?? new AccountRecord();
     }
 
-    public function getAccountOptions($emptyOption = null)
+    public function getAccountOptions(?string $emptyOption = null)
     {
         $options = [];
 
         if ($emptyOption !== null) {
-            $options[0] = strval($emptyOption);
+            $options[0] = $emptyOption;
         }
 
         foreach ($this->getAllAccounts() as $model) {
@@ -178,7 +183,7 @@ class Accounts extends Component
         return $options;
     }
 
-    public function typecastData(array $data)
+    public function typecastData(array $data): array
     {
         $data['name'] = $data['name'] ?? '';
         $data['osimFocusApiKey'] = $data['osimFocusApiKey'] ?? '';

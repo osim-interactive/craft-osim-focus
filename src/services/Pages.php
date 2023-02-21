@@ -30,9 +30,15 @@ class Pages extends Component
         return Craft::$app->getElements()->deleteElement($pageElement, true);
     }
 
-    public function savePage(PageElement $pageElement, bool $runValidation = true): bool
+    public function savePage(
+        PageElement $pageElement,
+        bool $runValidation = true
+    ): bool
     {
-        return Craft::$app->getElements()->saveElement($pageElement, $runValidation);
+        return Craft::$app->getElements()->saveElement(
+            $pageElement,
+            $runValidation
+        );
     }
 
     public function getPageCount(): int
@@ -42,7 +48,7 @@ class Pages extends Component
             ->count();
     }
 
-    public function updateIssueCount(int $pageId)
+    public function updateIssueCount(int $pageId): void
     {
         $pageElement = PageElement::find()
             ->id($pageId)

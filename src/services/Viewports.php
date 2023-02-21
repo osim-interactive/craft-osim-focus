@@ -9,8 +9,10 @@ use craft\helpers\Db;
 use craft\helpers\StringHelper;
 use osim\craft\focus\Plugin;
 use osim\craft\focus\models\Viewport as ViewportModel;
+use osim\craft\focus\records\Account as AccountRecord;
 use osim\craft\focus\records\Viewport as ViewportRecord;
 use osim\craft\focus\records\Project as ProjectRecord;
+use osim\craft\focus\services\Accounts;
 use yii\base\Component;
 
 class Viewports extends Component
@@ -230,12 +232,27 @@ class Viewports extends Component
     }
     public function handleChanged(ConfigEvent $event): void
     {
-        $uid = $event->tokenMatches[0];
+        $plugin = Plugin::getInstance();
+
         $data = $event->newValue;
+
+        $accountUid = $data['account'];
+
+        // Ensure the account is in place first
+        if ($accountUid) {
+            $projectConfig = Craft::$app->getProjectConfig();
+            $projectConfig->processConfigChanges(
+                Accounts::PROJECT_CONFIG_PATH . '.' . $accountUid
+            );
+
+            $accountRecord = $plugin->getAccounts()->getRecord($accountUid);
+            $data['accountId'] = $accountRecord->id;
+        }
+
         $data = $this->typecastData($data);
 
+        $uid = $event->tokenMatches[0];
         $record = $this->getRecord($uid);
-        $isNew = $record->getIsNewRecord();
 
         $record->accountId = $data['accountId'];
         $record->name = $data['name'];
@@ -248,20 +265,25 @@ class Viewports extends Component
         // Clear caches
         $this->items = null;
     }
-    private function getRecord($uid)
+    public function getRecord(int|string $criteria): ViewportRecord
     {
-        $query = ViewportRecord::find()
-            ->andWhere(['uid' => $uid]);
+        $query = ViewportRecord::find();
+
+        if (is_numeric($criteria)) {
+            $query->andWhere(['id' => $criteria]);
+        } elseif (is_string($criteria)) {
+            $query->andWhere(['uid' => $criteria]);
+        }
 
         return $query->one() ?? new ViewportRecord();
     }
 
-    public function getViewportOptions($emptyOption = null)
+    public function getViewportOptions(?string $emptyOption = null): array
     {
         $options = [];
 
         if ($emptyOption !== null) {
-            $options[0] = strval($emptyOption);
+            $options[0] = $emptyOption;
         }
 
         foreach ($this->getAllViewports() as $model) {
@@ -271,7 +293,7 @@ class Viewports extends Component
         return $options;
     }
 
-    public function typecastData(array $data)
+    public function typecastData(array $data): array
     {
         $data['accountId'] = intval($data['accountId'] ?? 0);
         $data['accountId'] = ($data['accountId'] ? $data['accountId'] : null);
