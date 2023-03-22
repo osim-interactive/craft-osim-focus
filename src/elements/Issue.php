@@ -165,6 +165,10 @@ class Issue extends Element
 
     public function getFieldLayout(): ?\craft\models\FieldLayout
     {
+        if (Craft::$app->getRequest()->getIsConsoleRequest()) {
+            return null;
+        }
+
         // Only show preview on desktop
         $preview = '';
         if (!Craft::$app->getRequest()->isMobileBrowser()) {
