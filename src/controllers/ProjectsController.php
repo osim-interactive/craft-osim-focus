@@ -169,13 +169,25 @@ class ProjectsController extends Controller
 
     public function actionTest(): ?Response
     {
+        $allowAdminChanges = Craft::$app->getConfig()->getGeneral()->allowAdminChanges;
+
         $plugin = Plugin::getInstance();
         if (!$plugin->getAccounts()->hasAccounts()) {
             Craft::$app->getSession()->setError(Plugin::t('Add a OSiM Focus account and at least one project before running tests.'));
-            return $this->redirect(Plugin::HANDLE . '/settings/accounts');
+
+            if ($allowAdminChanges) {
+                return $this->redirect(Plugin::HANDLE . '/settings/accounts');
+            } else {
+                return null;
+            }
         } elseif (!$plugin->getProjects()->hasProjects()) {
             Craft::$app->getSession()->setError(Plugin::t('Add at least one project before running tests.'));
-            return $this->redirect(Plugin::HANDLE . '/settings/projects');
+
+            if ($allowAdminChanges) {
+                return $this->redirect(Plugin::HANDLE . '/settings/projects');
+            } else {
+                return null;
+            }
         }
 
         Queue::push(new OsimFocusTest());
