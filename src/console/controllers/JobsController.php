@@ -13,7 +13,7 @@ class JobsController extends Controller
     private int $projectId;
     private int $viewportId;
 
-    public function options($actionID)
+    public function options($actionID): array
     {
         $options = parent::options($actionID);
         $options[] = 'siteId';
