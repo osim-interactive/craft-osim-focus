@@ -14,7 +14,7 @@ class PagesController extends Controller
         parent::init();
 
         $this->requireCpRequest();
-        $this->requireAdmin();
+        $this->requireAdmin(false);
     }
 
     public function actionIndex(?int $projectId = null): Response

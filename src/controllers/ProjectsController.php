@@ -3,10 +3,8 @@ namespace osim\craft\focus\controllers;
 
 use Craft;
 use craft\helpers\ArrayHelper;
-use craft\helpers\Queue;
 use craft\web\Controller;
 use osim\craft\focus\helpers\OsimFocusProjectApi;
-use osim\craft\focus\jobs\OsimFocusTest;
 use osim\craft\focus\models\Project as ProjectModel;
 use osim\craft\focus\models\ProjectViewport as ProjectViewportModel;
 use osim\craft\focus\models\OsimFocusProject as OsimFocusProjectModel;
@@ -165,35 +163,5 @@ class ProjectsController extends Controller
         $plugin->getProjects()->deleteProjectById($id);
 
         return $this->asSuccess();
-    }
-
-    public function actionTest(): ?Response
-    {
-        $allowAdminChanges = Craft::$app->getConfig()->getGeneral()->allowAdminChanges;
-
-        $plugin = Plugin::getInstance();
-        if (!$plugin->getAccounts()->hasAccounts()) {
-            Craft::$app->getSession()->setError(Plugin::t('Add a OSiM Focus account and at least one project before running tests.'));
-
-            if ($allowAdminChanges) {
-                return $this->redirect(Plugin::HANDLE . '/settings/accounts');
-            } else {
-                return null;
-            }
-        } elseif (!$plugin->getProjects()->hasProjects()) {
-            Craft::$app->getSession()->setError(Plugin::t('Add at least one project before running tests.'));
-
-            if ($allowAdminChanges) {
-                return $this->redirect(Plugin::HANDLE . '/settings/projects');
-            } else {
-                return null;
-            }
-        }
-
-        Queue::push(new OsimFocusTest());
-
-        Craft::$app->getSession()->setNotice(Plugin::t('Test job queued.'));
-
-        return null;
     }
 }
