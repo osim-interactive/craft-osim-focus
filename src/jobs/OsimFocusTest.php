@@ -63,7 +63,9 @@ class OsimFocusTest extends BaseJob
 
         $pageTester = new PageTester($projectId);
 
-        $sitemapIterator = new SitemapIterator(
+        $sitemapIterator = new SitemapIterator();
+
+        $sitemapIterator->open(
             $sitemapUrl,
             [
                 'modified_date_time' => $historyRecord->dateJob
@@ -94,6 +96,8 @@ class OsimFocusTest extends BaseJob
                 continue;
             }
         }
+
+        $sitemapIterator->close();
 
         if ($historyRecord->status == null) {
             $historyRecord->dateJob = $this->dateTimeNow;
