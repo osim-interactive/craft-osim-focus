@@ -184,6 +184,8 @@ class Projects extends Component
         );
         $data['siteId'] = $siteModel->id;
 
+        $data['viewports'] ??= [];
+
         // Ensure the viewports are in place first
         $data['viewportIds'] = [];
         foreach ($data['viewports'] as $viewportUid) {

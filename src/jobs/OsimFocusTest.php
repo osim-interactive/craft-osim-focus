@@ -71,9 +71,9 @@ class OsimFocusTest extends BaseJob
         );
 
         $fails = 0;
-        // foreach ($sitemapIterator as $pageUrl => $data) {
-        for ($i = 0; $i < 1; ++$i) {
-            $pageUrl = 'https://www.municipal.osim.link/town-hall/municipal-election/list-of-candidates';
+        foreach ($sitemapIterator as $pageUrl => $data) {
+        // for ($i = 0; $i < 1; ++$i) {
+            // $pageUrl = 'https://www.municipal.osim.link/town-hall/municipal-election/list-of-candidates';
 
             $status = $pageTester->testPageUrl($pageUrl, $viewportModel);
 
@@ -93,7 +93,6 @@ class OsimFocusTest extends BaseJob
 
                 continue;
             }
-
         }
 
         if ($historyRecord->status == null) {
