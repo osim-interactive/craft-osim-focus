@@ -284,7 +284,36 @@ class Page extends Element
     protected function tableAttributeHtml(string $attribute): string
     {
         if ($attribute === 'pageUrl') {
-            return parent::tableAttributeHtml('uri');
+            $sites = Craft::$app->getSites();
+
+            if ($sites->getTotalSites() > 1) {
+                return parent::tableAttributeHtml('uri');
+            }
+
+            $result = parent::tableAttributeHtml('uri');
+
+            $site = $sites->getPrimarySite();
+            $siteBaseUrl = $site->getBaseUrl();
+
+            $find = ['/'];
+            $replace = ['/<wbr>'];
+
+            $wordSeparator = Craft::$app->getConfig()->getGeneral()->slugWordSeparator;
+
+            if ($wordSeparator) {
+                $find[] = $wordSeparator;
+                $replace[] = $wordSeparator . '<wbr>';
+            }
+
+            $siteBaseUrl = str_replace($find, $replace, $siteBaseUrl);
+
+            $result = str_replace(
+                $siteBaseUrl,
+                '/',
+                $result
+            );
+
+            return $result;
         }
 
         return parent::tableAttributeHtml($attribute);
