@@ -13,8 +13,9 @@ class IssuesController extends Controller
     {
         parent::init();
 
-        $this->requireCpRequest();
-        $this->requireAdmin(false);
+        // $this->requireCpRequest();
+        // $this->requireAdmin(false);
+        $this->requirePermission(Plugin::PERMISSION_VIEW_ISSUES);
     }
 
     public function actionIndex(?int $projectId = null, ?int $viewportId = null): Response
