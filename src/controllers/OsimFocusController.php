@@ -16,9 +16,10 @@ class OsimFocusController extends Controller
     {
         $plugin = Plugin::getInstance();
 
-        $this->requireCpRequest();
         $this->requireAcceptsJson();
-        $this->requireAdmin(true);
+        // $this->requireCpRequest();
+        // $this->requireAdmin(true);
+        $this->requirePermission(Plugin::PERMISSION_SETTINGS);
 
         $account = $plugin->getAccounts()->getAccountById($accountId);
 
@@ -57,8 +58,9 @@ class OsimFocusController extends Controller
 
     public function actionTest(): ?Response
     {
-        $this->requireCpRequest();
-        $this->requireAdmin(false);
+        // $this->requireCpRequest();
+        // $this->requireAdmin(false);
+        $this->requirePermission(Plugin::PERMISSION_TEST);
 
         $allowAdminChanges = Craft::$app->getConfig()->getGeneral()->allowAdminChanges;
 

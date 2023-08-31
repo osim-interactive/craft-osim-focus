@@ -15,8 +15,9 @@ class AccountsController extends Controller
     {
         parent::init();
 
-        $this->requireCpRequest();
-        $this->requireAdmin(true);
+        // $this->requireCpRequest();
+        // $this->requireAdmin(true);
+        $this->requirePermission(Plugin::PERMISSION_SETTINGS);
     }
 
     public function actionIndex(): Response
