@@ -13,7 +13,7 @@ class PagesController extends Controller
     {
         parent::init();
 
-        // $this->requireCpRequest();
+        $this->requireCpRequest();
         // $this->requireAdmin(false);
         $this->requirePermission(Plugin::PERMISSION_VIEW_PAGES);
     }

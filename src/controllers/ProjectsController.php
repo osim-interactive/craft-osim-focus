@@ -19,7 +19,7 @@ class ProjectsController extends Controller
     {
         parent::init();
 
-        // $this->requireCpRequest();
+        $this->requireCpRequest();
         // $this->requireAdmin(true);
         $this->requirePermission(Plugin::PERMISSION_SETTINGS);
     }

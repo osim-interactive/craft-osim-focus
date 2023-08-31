@@ -17,7 +17,7 @@ class OsimFocusController extends Controller
         $plugin = Plugin::getInstance();
 
         $this->requireAcceptsJson();
-        // $this->requireCpRequest();
+        $this->requireCpRequest();
         // $this->requireAdmin(true);
         $this->requirePermission(Plugin::PERMISSION_SETTINGS);
 
@@ -58,7 +58,7 @@ class OsimFocusController extends Controller
 
     public function actionTest(): ?Response
     {
-        // $this->requireCpRequest();
+        $this->requireCpRequest();
         // $this->requireAdmin(false);
         $this->requirePermission(Plugin::PERMISSION_TEST);
 
