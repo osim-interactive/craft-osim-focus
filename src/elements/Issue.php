@@ -14,6 +14,7 @@ use osim\craft\focus\Plugin;
 use osim\craft\focus\elements\actions\SetStatus as SetStatusAction;
 use osim\craft\focus\elements\actions\View as ViewAction;
 use osim\craft\focus\elements\db\IssueQuery;
+use osim\craft\focus\elements\LinkTableAttributeHtmlTrait;
 use osim\craft\focus\models\Project as ProjectModel;
 use osim\craft\focus\records\Issue as IssueRecord;
 use osim\craft\focus\records\Page as PageRecord;
@@ -22,6 +23,8 @@ use yii\base\InvalidConfigException;
 
 class Issue extends Element
 {
+    use LinkTableAttributeHtmlTrait;
+
     const STATUS_RESOLVED = 'resolved';
     const STATUS_UNRESOLVED = 'unresolved';
 
@@ -50,14 +53,16 @@ class Issue extends Element
     public ?string $summary = null;
     public ?bool $resolved = null;
 
+    protected ?string $linkUrl = null;
+
     public function init(): void
     {
         parent::init();
 
         $this->title = $this->pageTitle;
-        $this->uri = $this->pageUrl;
-        if ($this->uri) {
-            $this->uri = UrlHelper::urlWithParams($this->uri, [
+        $this->linkUrl = $this->pageUrl;
+        if ($this->linkUrl) {
+            $this->linkUrl = UrlHelper::urlWithParams($this->linkUrl, [
                 'osim-focus-xpath' => $this->xpath
             ]);
         }
@@ -72,7 +77,7 @@ class Issue extends Element
             [
                 'pageId', 'viewportId', 'certainty', 'priority',
                 'ruleId', 'ruleName',
-                'ruleDescription', 'snippet', 'xpath', 'selector',
+                'snippet', 'xpath', 'selector',
             ],
             'required'
         ];
@@ -174,7 +179,7 @@ class Issue extends Element
         if (!Craft::$app->getRequest()->isMobileBrowser()) {
             $preview = '<div class="osim-focus-preview">' . "\n" .
                 '<div class="osim-focus-frame" style="width: ' . $this->viewportWidth . 'px; height: ' . $this->viewportHeight . 'px;">' . "\n" .
-                    '<iframe src="' . Html::encode($this->uri) . '"/>' . "\n" .
+                    '<iframe src="' . Html::encode($this->linkUrl) . '"/>' . "\n" .
                 '</div>' . "\n" .
             '</div>' . "\n";
         }
@@ -219,13 +224,15 @@ class Issue extends Element
         $html .= '<p><b>' . Plugin::t('Certainty') . ': </b>' . $this->certainty . '</p>' . "\n" .
             '<p><b>' . Plugin::t('Priority') . ': </b>' . $this->priority . '</p>' . "\n" .
             '<p>' . "\n" .
-                '<a class="go" href="' . Html::encode($this->uri) . '" rel="noopener" target="_blank">' . "\n" .
+                '<a class="go" href="' . Html::encode($this->linkUrl) . '" rel="noopener" target="_blank">' . "\n" .
                     '<span dir="ltr">View Issue</span>' . "\n" .
                 '</a>' . "\n" .
-            '</p>' . "\n" .
+            '</p>' . "\n";
 
-            '<h2>' . Plugin::t('Description') . '</h2>' . "\n" .
-            '<p>' . Html::encode($this->ruleDescription) . '</p>' . "\n";
+        if ($this->ruleDescription) {
+            $html .= '<h2>' . Plugin::t('Description') . '</h2>' . "\n" .
+                '<p>' . Html::encode($this->ruleDescription) . '</p>' . "\n";
+        }
 
         if ($this->summary) {
             $html .= '<h2>' . Plugin::t('What To Fix') . '</h2>' . "\n" .

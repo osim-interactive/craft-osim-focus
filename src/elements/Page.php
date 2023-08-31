@@ -7,18 +7,23 @@ use craft\db\Query;
 use craft\elements\actions\Edit as EditAction;
 use craft\elements\actions\Restore as RestoreAction;
 use craft\elements\User;
+use craft\helpers\Db;
 use craft\helpers\UrlHelper;
 use craft\validators\UrlValidator;
 use osim\craft\focus\Plugin;
 use osim\craft\focus\elements\actions\View as ViewAction;
 use osim\craft\focus\elements\actions\Test as TestAction;
 use osim\craft\focus\elements\db\PageQuery;
+use osim\craft\focus\elements\LinkTableAttributeHtmlTrait;
+use osim\craft\focus\elements\Issue as IssueElement;
 use osim\craft\focus\records\Project as ProjectRecord;
 use osim\craft\focus\records\Page as PageRecord;
 use yii\base\InvalidConfigException;
 
 class Page extends Element
 {
+    use LinkTableAttributeHtmlTrait;
+
     public ?int $projectId = null;
     public ?string $pageTitle = null;
     public ?string $pageUrl = null;
@@ -28,12 +33,14 @@ class Page extends Element
     public ?int $bestPracticeIssues = null;
     public ?int $totalIssues = null;
 
+    protected ?string $linkUrl = null;
+
     public function init(): void
     {
         parent::init();
 
         $this->title = $this->pageTitle;
-        $this->uri = $this->pageUrl;
+        $this->linkUrl = $this->pageUrl;
         $this->setUiLabel(Plugin::t('Issues'));
     }
 
@@ -286,34 +293,10 @@ class Page extends Element
         if ($attribute === 'pageUrl') {
             $sites = Craft::$app->getSites();
 
-            if ($sites->getTotalSites() > 1) {
-                return parent::tableAttributeHtml('uri');
-            }
-
-            $result = parent::tableAttributeHtml('uri');
-
-            $site = $sites->getPrimarySite();
-            $siteBaseUrl = $site->getBaseUrl();
-
-            $find = ['/'];
-            $replace = ['/<wbr>'];
-
-            $wordSeparator = Craft::$app->getConfig()->getGeneral()->slugWordSeparator;
-
-            if ($wordSeparator) {
-                $find[] = $wordSeparator;
-                $replace[] = $wordSeparator . '<wbr>';
-            }
-
-            $siteBaseUrl = str_replace($find, $replace, $siteBaseUrl);
-
-            $result = str_replace(
-                $siteBaseUrl,
-                '/',
-                $result
+            return $this->linkTableAttributeHtml(
+                $this->linkUrl,
+                ($sites->getTotalSites() !== 1)
             );
-
-            return $result;
         }
 
         return parent::tableAttributeHtml($attribute);
@@ -322,5 +305,67 @@ class Page extends Element
     protected static function defineSearchableAttributes(): array
     {
         return ['pageTitle', 'pageUrl'];
+    }
+
+    public function afterDelete(): void
+    {
+        parent::afterDelete();
+
+        if ($this->hardDelete) {
+            // Hard delete trashed issues for this page
+            while (true) {
+                 $elements = IssueElement::find()
+                    ->pageId($this->id)
+                    ->trashed(true)
+                    ->limit(10)
+                    ->all();
+
+                 if (!$elements) {
+                    break;
+                 }
+
+                 foreach ($elements as $element) {
+                    Craft::$app->getElements()->deleteElement($element, true);
+                 }
+            }
+        }
+
+        // Delete issues for this page
+        while (true) {
+             $elements = IssueElement::find()
+                ->pageId($this->id)
+                ->limit(10)
+                ->all();
+
+             if (!$elements) {
+                break;
+             }
+
+             foreach ($elements as $element) {
+                Craft::$app->getElements()->deleteElement($element, $this->hardDelete);
+             }
+        }
+    }
+
+    public function afterRestore(): void
+    {
+        parent::afterRestore();
+
+        // Restore any deleted issues
+        while (true) {
+             $elements = IssueElement::find()
+                ->pageId($this->id)
+                ->trashed(true)
+                ->limit(10)
+                ->all();
+
+             if (!$elements) {
+                break;
+             }
+
+             foreach ($elements as $element) {
+                Craft::$app->getElements()->restoreElement($element);
+             }
+        }
     }
 }

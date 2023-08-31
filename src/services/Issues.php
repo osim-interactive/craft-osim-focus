@@ -17,18 +17,49 @@ class Issues extends Component
             ->id($issueId)
             ->one();
     }
+
     public function getIssueByRule(
         int $pageId,
         int $viewportId,
         int $ruleId,
-        string $xpath
-    ): ?IssueElement {
-        return IssueElement::find()
+        string $xpath,
+        bool $restoreTrashed = false
+    ): IssueElement {
+        $element = IssueElement::find()
             ->pageId($pageId)
             ->viewportId($viewportId)
             ->ruleId($ruleId)
             ->xpath($xpath)
             ->one();
+
+        if ($element) {
+            return $element;
+        }
+
+        // Check for trashed element and restore
+        if ($restoreTrashed) {
+            $element = IssueElement::find()
+                ->pageId($pageId)
+                ->viewportId($viewportId)
+                ->ruleId($ruleId)
+                ->xpath($xpath)
+                ->trashed(true)
+                ->one();
+
+            if ($element) {
+                Craft::$app->getElements()->restoreElement($element);
+
+                return $element;
+            }
+        }
+
+        $element = new IssueElement();
+        $element->pageId = $pageId;
+        $element->viewportId = $viewportId;
+        $element->ruleId = $ruleId;
+        $element->xpath = $xpath;
+
+        return $element;
     }
 
     public function deleteIssueById(int $issueId): bool

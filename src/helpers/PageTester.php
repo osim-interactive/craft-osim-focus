@@ -231,18 +231,13 @@ class PageTester
     ) {
         $plugin = Plugin::getInstance();
 
-        $pageElement = PageElement::find()
-            ->projectId($this->project->id)
-            ->pageUrl($pageUrl)
-            ->one();
-
-        if (!$pageElement) {
-            $pageElement = new PageElement();
-            $pageElement->projectId = $this->project->id;
-        }
+        $pageElement = $plugin->getPages()->getPageByUrl(
+            $this->project->id,
+            $pageUrl,
+            true
+        );
 
         $pageElement->pageTitle = $this->cleanPageTitle($pageTitle);
-        $pageElement->pageUrl = $pageUrl;
 
         $pageElement->siteId = $this->project->siteId;
 
@@ -266,7 +261,8 @@ class PageTester
         $name = $site->getName();
         if (StringHelper::endsWith($title, $name, false)) {
             $newTitle = substr($title, 0, -strlen($name));
-            $newTitle = trim($newTitle, ' -');
+            // Remove common trailing separators
+            $newTitle = rtrim($newTitle, ' -|');
             if ($newTitle !== '') {
                 $title = $newTitle;
             }
@@ -294,24 +290,17 @@ class PageTester
                 $pageId,
                 $viewportId,
                 $issue['rule_id'],
-                $issue['xpath']
+                $issue['xpath'],
+                true
             );
-
-            if (!$issueElement) {
-                $issueElement = new IssueElement();
-                $issueElement->pageId = $pageId;
-                $issueElement->viewportId = $viewportId;
-            }
 
             $issueElement->siteId = $siteId;
 
             $issueElement->certainty = $issue['certainty'];
             $issueElement->priority = $issue['priority'];
-            $issueElement->ruleId = $issue['rule_id'];
             $issueElement->ruleName = $issue['rule_name'];
             $issueElement->ruleDescription = $issue['rule_description'];
             $issueElement->snippet = $issue['snippet'];
-            $issueElement->xpath = $issue['xpath'];
             $issueElement->selector = $issue['selector'];
             $issueElement->wcag = $issue['wcag'];
             $issueElement->wcagLevel = $issue['wcag_level'];

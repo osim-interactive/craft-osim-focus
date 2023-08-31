@@ -110,7 +110,7 @@ class Install extends Migration
                 'priority' => $this->integer()->notNull(),
                 'ruleId' => $this->integer()->notNull(),
                 'ruleName' => $this->string(250)->notNull(),
-                'ruleDescription' => $this->text()->notNull(),
+                'ruleDescription' => $this->text(),
                 'snippet' => $this->text()->notNull(),
                 'xpath' => $this->text()->notNull(),
                 'selector' => $this->text()->notNull(),
@@ -221,6 +221,14 @@ class Install extends Migration
         $this->addForeignKey(
             null,
             '{{%osim_focus_pages}}',
+            'id',
+            '{{%elements}}',
+            'id',
+            'CASCADE'
+        );
+        $this->addForeignKey(
+            null,
+            '{{%osim_focus_pages}}',
             'projectId',
             '{{%osim_focus_projects}}',
             'id',
@@ -228,6 +236,14 @@ class Install extends Migration
         );
 
         // Issues
+        $this->addForeignKey(
+            null,
+            '{{%osim_focus_issues}}',
+            'id',
+            '{{%elements}}',
+            'id',
+            'CASCADE'
+        );
         $this->addForeignKey(
             null,
             '{{%osim_focus_issues}}',

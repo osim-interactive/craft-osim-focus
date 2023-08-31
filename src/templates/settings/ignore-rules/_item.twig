@@ -50,7 +50,7 @@
 
     {% if id %}<input type="hidden" name="data[id]" value="{{id}}">{% endif %}
 
-    {% if item.getFirstErrors('general') %}
+    {% if item.getFirstError('general') %}
         <div class="error">
             <span class="visually-hidden">{{'Error:'|t('app')}}</span>
             {{item.getFirstError('general')}}
@@ -58,7 +58,7 @@
     {% endif %}
 
     {{forms.textField({
-        first: not item.getFirstErrors('general'),
+        first: not item.getFirstError('general'),
         label: 'Name'|t('osim-focus'),
         instructions: 'This name is used for your identification only.'|t('osim-focus'),
         name: 'data[name]',

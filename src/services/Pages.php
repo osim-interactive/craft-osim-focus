@@ -15,6 +15,42 @@ class Pages extends Component
             ->one();
     }
 
+    public function getPageByUrl(
+        int $projectId,
+        string $pageUrl,
+        bool $restoreTrashed = false
+    ): PageElement {
+        $element = PageElement::find()
+            ->projectId($projectId)
+            ->pageUrl($pageUrl)
+            ->one();
+
+        if ($element) {
+            return $element;
+        }
+
+        // Check for trashed element and restore
+        if ($restoreTrashed) {
+            $element = PageElement::find()
+                ->projectId($projectId)
+                ->pageUrl($pageUrl)
+                ->trashed(true)
+                ->one();
+
+            if ($element) {
+                Craft::$app->getElements()->restoreElement($element);
+
+                return $element;
+            }
+        }
+
+        $element = new PageElement();
+        $element->projectId = $projectId;
+        $element->pageUrl = $pageUrl;
+
+        return $element;
+    }
+
     public function deletePageById(int $pageId): bool
     {
         $pageElement = $this->getPageById($pageId);
