@@ -186,6 +186,7 @@ class Install extends Migration
             'siteId',
             '{{%sites}}',
             'id',
+            'CASCADE',
             'CASCADE'
         );
 

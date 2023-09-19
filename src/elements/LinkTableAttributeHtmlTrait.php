@@ -6,7 +6,10 @@ use craft\helpers\Html;
 
 trait LinkTableAttributeHtmlTrait
 {
-    function linkTableAttributeHtml(?string $url, $relative = false): string
+    protected function linkTableAttributeHtml(
+        ?string $url,
+        bool $relative = false
+    ): string
     {
         if ($url === null) {
             return '';
