@@ -4,7 +4,7 @@ namespace osim\craft\focus\controllers;
 use Craft;
 use craft\web\Controller;
 use osim\craft\focus\Plugin;
-use osim\craft\elements\Issue as IssueElement;
+use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
 class IssuesController extends Controller

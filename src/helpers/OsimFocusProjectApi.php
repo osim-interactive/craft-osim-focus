@@ -57,7 +57,7 @@ class OsimFocusProjectApi
 
         return $this->getOsimFocusProjectModel($response);
     }
-    public function putProject(OsimFocusProjectModel $osimFocusProjectModel): ?OsimFocusProjectModel
+    public function patchProject(OsimFocusProjectModel $osimFocusProjectModel): ?OsimFocusProjectModel
     {
         if (!$osimFocusProjectModel->validate() || !$osimFocusProjectModel->uid) {
             throw new InvalidArgumentException('OSiM Focus project model is invalid.');
@@ -67,7 +67,7 @@ class OsimFocusProjectApi
 
         $response = $this->request(
             '/projects/' . rawurlencode($osimFocusProjectModel->uid),
-            'PUT',
+            'PATCH',
             $data
         );
 
