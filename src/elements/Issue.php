@@ -544,7 +544,7 @@ class Issue extends Element
         $settings = Plugin::getInstance()->getSettings();
 
         if ($attribute === 'pageUrl') {
-            return parent::tableAttributeHtml('link');
+            return parent::attributeHtml('link');
         }
 
         if ($attribute === 'viewport') {
@@ -577,7 +577,7 @@ class Issue extends Element
             return '';
         }
 
-        return parent::tableAttributeHtml($attribute);
+        return parent::attributeHtml($attribute);
     }
 
     protected static function defineSearchableAttributes(): array

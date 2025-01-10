@@ -207,7 +207,7 @@ class Plugin extends \craft\base\Plugin
             'issues' => Issues::class,
             'pages' => Pages::class,
             'projects' => Projects::class,
-            'settings' => Settings::class,
+            // 'settings' => Settings::class,
             'viewports' => Viewports::class,
         ]);
 
@@ -239,7 +239,7 @@ class Plugin extends \craft\base\Plugin
     }
     private function registerPermissions()
     {
-        if (Craft::$app->getEdition() !== Craft::Pro) {
+        if (Craft::$app->getEdition() !== \craft\enums\CmsEdition::Pro) {
             return;
         }
 

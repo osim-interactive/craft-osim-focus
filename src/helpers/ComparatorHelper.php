@@ -23,7 +23,7 @@ class ComparatorHelper
             case 'notEndsWith':
                 return (substr($against, -strlen($value)) !== $value);
             default:
-                throw new \InvalidConfigException('Comparator is invalid.');
+                throw new InvalidConfigException('Comparator is invalid.');
         }
     }
 }

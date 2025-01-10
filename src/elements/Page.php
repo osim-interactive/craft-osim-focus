@@ -299,7 +299,7 @@ class Page extends Element
             );
         }
 
-        return parent::tableAttributeHtml($attribute);
+        return parent::attributeHtml($attribute);
     }
 
     protected static function defineSearchableAttributes(): array

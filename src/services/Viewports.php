@@ -130,9 +130,9 @@ class Viewports extends Component
             $model = new ViewportModel($result);
 
             if ($model->width !== $width && $model->height !== $height) {
-                $model->name = $this->getViewportName($widht, $height);
+                $model->name = $this->getViewportName($width, $height);
                 if ($width) {
-                    $model->width = $wifth;
+                    $model->width = $width;
                 }
 
                 if ($height) {

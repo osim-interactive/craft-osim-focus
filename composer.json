@@ -25,7 +25,7 @@
     "docs": "https://github.com/osim-interactive/craft-osim-focus/blob/main/README.md"
   },
   "require": {
-    "craftcms/cms": "^4.0.0",
+    "craftcms/cms": "^5.0.0",
     "xlient/xml-sitemap": "^1.0.0"
   },
   "autoload": {
@@ -36,5 +36,17 @@
   "extra": {
     "name": "OSiM Focus",
     "handle": "osim-focus"
-  }
+  },
+  "require-dev": {
+    "phpstan/phpstan": "v1.4.6",
+    "craftcms/phpstan": "dev-main"
+  },
+  "config": {
+    "allow-plugins": {
+      "yiisoft/yii2-composer": true,
+      "craftcms/plugin-installer": true
+    }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
 }
