@@ -288,7 +288,7 @@ class Page extends Element
         ];
     }
 
-    protected function tableAttributeHtml(string $attribute): string
+    protected function attributeHtml(string $attribute): string
     {
         if ($attribute === 'pageUrl') {
             $sites = Craft::$app->getSites();

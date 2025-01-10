@@ -539,7 +539,7 @@ class Issue extends Element
         ];
     }
 
-    protected function tableAttributeHtml(string $attribute): string
+    protected function attributeHtml(string $attribute): string
     {
         $settings = Plugin::getInstance()->getSettings();
 
