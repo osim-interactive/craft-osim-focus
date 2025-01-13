@@ -1,14 +1,15 @@
 .slideout.osim-focus-issues:not(.so-mobile) {
-    width: calc(30% - 8px);
+    width: 30%;
+    left: 70% !important;
 }
 
 .osim-focus-preview {
     pointer-events: none;
     position: fixed;
-    left: 8px;
-    right: calc(30% + 8px);
-    top: 8px;
-    bottom: 8px;
+    left: 0;
+    right: 30%;
+    top: 0;
+    bottom: 0;
     overflow: hidden;
 }
 
