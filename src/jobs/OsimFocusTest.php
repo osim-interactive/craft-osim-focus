@@ -76,7 +76,9 @@ class OsimFocusTest extends BaseJob
         foreach ($sitemapIterator as $pageUrl => $data) {
             $status = $pageTester->testPageUrl($pageUrl, $viewportModel);
 
-            if ($status === 500) {
+            if ($status === 0) {
+                continue;
+            } elseif ($status === 500) {
                 $historyRecord->status = 500;
                 break;
             } elseif (in_array($status, [401, 402])) {

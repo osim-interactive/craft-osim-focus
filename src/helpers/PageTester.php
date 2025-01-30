@@ -42,7 +42,7 @@ class PageTester
         $plugin = Plugin::getInstance();
 
         if ($this->isIgnorablePage($pageUrl, $viewportModel->id)) {
-            return 422;
+            return 0;
         }
 
         // If the viewport is the default account viewport
@@ -116,7 +116,7 @@ class PageTester
                 continue;
             }
 
-            if ($rule['pageUrlValue'] !== null &&
+            if ($rule['pageUrlValue'] === null ||
                 !ComparatorHelper::matchAgainst(
                     $rule['pageUrlComparator'],
                     $rule['pageUrlValue'],
